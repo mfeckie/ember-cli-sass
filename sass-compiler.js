@@ -1,5 +1,8 @@
+'use strict';
+/* eslint-env node */
+
 //@ts-check
-const Plugin = require('broccoli-plugin');
+const Plugin = require('broccoli-caching-writer');
 const FSTree = require('fs-tree-diff');
 const walkSync = require('walk-sync');
 const path = require('path');
