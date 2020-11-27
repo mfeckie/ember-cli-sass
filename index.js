@@ -1,6 +1,6 @@
 'use strict';
 /* eslint-env node */
-var SassCompilerFactory = require('broccoli-sass-source-maps');
+const SassCompiler = require('./sass-compiler');
 var path = require('path');
 var VersionChecker = require('ember-cli-version-checker');
 var Funnel = require('broccoli-funnel');
@@ -46,7 +46,6 @@ SASSPlugin.prototype.toTree = function(tree, inputPath, outputPath, inputOptions
     }
   }
 
-  var SassCompiler = SassCompilerFactory(options.implementation);
   var ext = options.extension || 'scss';
   var paths = options.outputPaths;
   var trees = Object.keys(paths).map(function(file) {
