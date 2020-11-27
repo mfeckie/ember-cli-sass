@@ -20,7 +20,6 @@ module.exports = class SassCompiler extends Plugin {
 
   build() {
     var destFile = path.join(this.outputPath, this.outputFile)
-    mkdirp.sync(path.dirname(destFile))
 
     var sassOptions = {
       file: path.join(this.inputPaths[0], this.inputFile),
@@ -33,7 +32,12 @@ module.exports = class SassCompiler extends Plugin {
     }
 
     const result = sass.renderSync(sassOptions)
-    fs.writeFileSync(destFile, result.css)
 
+    try {
+      fs.writeFileSync(destFile, result.css)
+    } catch (error) {
+      mkdirp.sync(path.dirname(destFile))
+      fs.writeFileSync(destFile, result.css)
+    }
   }
 }
