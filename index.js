@@ -12,7 +12,7 @@ function SASSPlugin(optionsFn) {
   this.ext = ['scss', 'sass'];
 }
 
-SASSPlugin.prototype.toTree = function(tree, inputPath, outputPath, inputOptions) {
+SASSPlugin.prototype.toTree = function (tree, inputPath, _outputPath, inputOptions) {
   var options = Object.assign({}, this.optionsFn(), inputOptions);
   var inputTrees;
 
@@ -23,7 +23,9 @@ SASSPlugin.prototype.toTree = function(tree, inputPath, outputPath, inputOptions
     })];
   }
   else {
-    inputTrees = [tree];
+    inputTrees = [new Funnel(tree, {
+      include: ["**/*.scss", "**/*.css"]
+    })];
   }
 
   if (options.includePaths) {
@@ -48,7 +50,7 @@ SASSPlugin.prototype.toTree = function(tree, inputPath, outputPath, inputOptions
 
   var ext = options.extension || 'scss';
   var paths = options.outputPaths;
-  var trees = Object.keys(paths).map(function(file) {
+  var trees = Object.keys(paths).map(function (file) {
     var input = path.join(inputPath, file + '.' + ext);
     var output = paths[file];
     return new SassCompiler(inputTrees, input, output, options);
@@ -62,15 +64,15 @@ SASSPlugin.prototype.toTree = function(tree, inputPath, outputPath, inputOptions
 };
 
 module.exports = {
-  name:  'ember-cli-sass',
+  name: 'ember-cli-sass',
 
-  shouldSetupRegistryInIncluded: function() {
+  shouldSetupRegistryInIncluded: function () {
     let checker = new VersionChecker(this);
     return !checker.for('ember-cli').isAbove('0.2.0');
   },
 
   sassOptions: function () {
-    var env  = process.env.EMBER_ENV;
+    var env = process.env.EMBER_ENV;
     var envConfig = this.project.config(env).sassOptions;
 
     var app = this.app;
@@ -106,7 +108,7 @@ module.exports = {
     return options;
   },
 
-  setupPreprocessorRegistry: function(type, registry) {
+  setupPreprocessorRegistry: function (type, registry) {
     registry.add('css', new SASSPlugin(this.sassOptions.bind(this)));
 
     // prevent conflict with broccoli-sass if it's installed
