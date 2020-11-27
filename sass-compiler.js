@@ -3,8 +3,6 @@
 
 //@ts-check
 const Plugin = require('broccoli-caching-writer');
-const FSTree = require('fs-tree-diff');
-const walkSync = require('walk-sync');
 const path = require('path');
 const mkdirp = require('mkdirp');
 const fs = require('fs');
@@ -21,10 +19,6 @@ module.exports = class SassCompiler extends Plugin {
   }
 
   build() {
-    if (!this._hasChanged()) {
-      return;
-    }
-
     var destFile = path.join(this.outputPath, this.outputFile)
     mkdirp.sync(path.dirname(destFile))
 
@@ -41,20 +35,5 @@ module.exports = class SassCompiler extends Plugin {
     const result = sass.renderSync(sassOptions)
     fs.writeFileSync(destFile, result.css)
 
-  }
-
-  _hasChanged() {
-    let changed = false;
-    for (let inputPath of this.inputPaths) {
-      const current = FSTree.fromEntries(walkSync.entries(inputPath));
-      const patch = current.calculatePatch(this._previous[inputPath] || []);
-      this._previous[inputPath] = current;
-
-      if (patch.length) {
-        changed = true;
-      }
-    }
-
-    return changed;
   }
 }
