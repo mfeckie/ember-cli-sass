@@ -17,7 +17,7 @@ module.exports = function(defaults) {
     sassOptions: {
       implementation: sass,
       includePaths: [
-        'bower_components/SpinKit/scss',
+        'node_modules/foundation-sites/scss',
       ]
     }
   });
